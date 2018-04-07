@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Block : MonoBehaviour {
-	public GameObject track;
-	public bool spawned;
+	public bool spawned = false;
+	const int lifeTime = 25;
 
 	void OnTriggerEnter(Collider other) {
 		if (spawned) return;
-
 		
 		if (other.tag == "player") {
 			spawned = true;
 		}
+
+        Camera.main.GetComponent<Manager>().spawn();
+
+		Invoke("suicide", lifeTime);
 	}
-	void Start () {
-		
-	}
-	
-	void Update () {
-		
+
+	void suicide() {
+		Destroy(gameObject);
 	}
 }

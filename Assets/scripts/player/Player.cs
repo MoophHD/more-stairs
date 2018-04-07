@@ -9,12 +9,9 @@ public class Player : MonoBehaviour {
 	void Awake() {
 		rb = GetComponent<Rigidbody>();
 	}
-	void Start () {
-		setVelocity( true );
-	}
 
-	void setVelocity( bool isRight ) {
-		Vector3 dir = isRight ? Vector3.right : Vector3.left;
+	public void setVelocity( bool isRight ) {
+		Vector3 dir = isRight ? Vector3.right : Vector3.forward;
 
 		rb.velocity = dir * speed;
 	}
