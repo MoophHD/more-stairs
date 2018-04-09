@@ -8,17 +8,14 @@ public class Manager : MonoBehaviour
     public Player player;
     public GameObject block;
     public Transform blockContainer;
-
     private float playerSide;
     private float blockSide;
     private Vector3 lastBlockPos;
 
-    void Start() {
-        player.setVelocity(isRight);
-    }
+    public GameObject pauseMenu;
+    public GameObject scoreText;
 
     void Awake() {
-        isRight = Random.value > 0.5f;
         Mesh mesh = block.GetComponent<MeshFilter>().sharedMesh;
         Bounds bounds = mesh.bounds;
         blockSide = bounds.size.x;
@@ -30,13 +27,32 @@ public class Manager : MonoBehaviour
 
         Vector3 playerPos = player.GetComponent<Transform>().position;
         lastBlockPos = new Vector3(playerPos.x, playerPos.y - (blockSide + playerSide) * 0.5f, playerPos.z);
-        
+
+        gameStart();
+    }
+
+    void Start()
+    {
+        player.setVelocity(isRight);
+    }
+
+    public void gameStart() {
+        scoreText.SetActive(true);
+        pauseMenu.SetActive(false);
+
+        foreach (Transform child in blockContainer)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        isRight = Random.value > 0.5f;
+
         createBlock(lastBlockPos);
         spawn();
         spawn();
         spawn();
-
     }
+
     public void spawn() {
         Vector3 nextPos;
         if (isRight) {
@@ -53,5 +69,10 @@ public class Manager : MonoBehaviour
     void createBlock(Vector3 pos) {
         GameObject nextBlock = Instantiate(block, pos, Quaternion.identity);
         nextBlock.GetComponent<Transform>().SetParent(blockContainer);
+    }
+
+    public void onLose() {
+        scoreText.SetActive(false);
+        pauseMenu.SetActive(true);
     }
 }

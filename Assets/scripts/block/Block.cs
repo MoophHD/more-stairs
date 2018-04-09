@@ -14,6 +14,7 @@ public class Block : MonoBehaviour {
 		}
 
         Camera.main.GetComponent<Manager>().spawn();
+		Camera.main.GetComponent<Score>().add();
 
 		Invoke("suicide", lifeTime);
 	}
