@@ -6,64 +6,39 @@ using System;
 using UnityEngine.SceneManagement;
 
 public class AdManager : MonoBehaviour {
-	// const string appId = "ca-app-pub-1038804138558980~9877584517";
-	// // const string testAppId = "ca-app-pub-3940256099942544~3347511713";
+	const string appId = "ca-app-pub-1038804138558980~9877584517";
+	const string bannerId = "ca-app-pub-1038804138558980/9228995055";
+	const string testBannerId = "ca-app-pub-3940256099942544/6300978111";
 
-	// const string bannerId = "ca-app-pub-1038804138558980/9228995055";
-	// const string testBannerId = "ca-app-pub-3940256099942544/6300978111";
-	// const string rewardId = "ca-app-pub-1038804138558980/9283522292";
-	// const string testRewardId = "ca-app-pub-3940256099942544/5224354917";
+	const string interstialId = "ca-app-pub-1038804138558980/9283522292";
+	const string testInterstialId = "ca-app-pub-3940256099942544/1033173712";
+	private InterstitialAd interstitial;
+    private AdRequest request;
 
-	// private RewardBasedVideoAd rewardBasedVideo;
+	private static AdManager _instance;
+	public static AdManager instance {
+        get {
+            return _instance;
+        }
+    }
+	void Awake() {
+		_instance = this;
+	}
 
-	// private BannerView bannerView;
-	// public bool playingAd;
+	void Start () {
+		MobileAds.Initialize(appId);
+        interstitial = new InterstitialAd(testInterstialId);
+        request = new AdRequest.Builder().Build();
+	}
 
-	// private static AdManager _instance;
-	// public static AdManager instance {
-    //     get {
-    //         return _instance;
-    //     }
-    // }
-	// void Awake() {
-	// 	_instance = this;
-	// }
+	public void showInterstial() {
+        if (interstitial.IsLoaded())
+        {
+            interstitial.Show();
+        }
+        interstitial.Destroy();
 
-	// void Start () {
-	// 	MobileAds.Initialize(appId);
-	// }
-
-	// void initAds(Scene scene, LoadSceneMode mode) {
-	// 	if (scene.buildIndex != 0) return;
-
-	// 	this.rewardBasedVideo = RewardBasedVideoAd.Instance;
-	// 	rewardBasedVideo.OnAdRewarded += (a, b) => { GameActions.secondChance(); playingAd = false;};
-	// 	rewardBasedVideo.OnAdFailedToLoad += fail;
-	// 	rewardBasedVideo.OnAdClosed += fail;
-
-	// 	RequestBanner();
-	// 	RequestRewardedVideo();
-	// }
-
-	// private void fail(object sender, AdFailedToLoadEventArgs args) {
-	// 	GameActions.restart(); playingAd = false;
-	// }
-
-	// private void fail(object sender, EventArgs args) {
-	// 	GameActions.restart(); playingAd = false;
-	// }
-
-	// public void showRewardedAd() {
-		
-	// 	if (this.rewardBasedVideo.IsLoaded()) {
-	// 		playingAd = true;
-	// 		this.rewardBasedVideo.Show();
-	// 		RequestRewardedVideo();
-	// 	}
-	// }
-
-	// public void RequestRewardedVideo() {
-	// 	AdRequest request = new AdRequest.Builder().Build();
-    //     rewardBasedVideo.LoadAd(request, rewardId);
-	// }
+        request = new AdRequest.Builder().Build();
+        interstitial.LoadAd(request);
+	}
 }

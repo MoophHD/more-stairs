@@ -3,16 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour {
-	const float speed = 5;
+	const float speed = 3;
+	const float jumpVelocity = 5;
 	private Rigidbody rb;
+
+	private bool jumpRequest;
 	
 	void Awake() {
 		rb = GetComponent<Rigidbody>();
 	}
 
-	public void setVelocity( bool isRight ) {
-		Vector3 dir = isRight ? Vector3.right : Vector3.forward;
+	public void setVelocity() {
+		Vector3 dir = Vector3.right;
 
 		rb.velocity = dir * speed;
 	}
+
+	void Update() {
+        if (Input.GetMouseButtonDown(0))
+        {
+            jumpRequest = true;
+        }
+	}
+
+	void FixedUpdate() {
+        if (jumpRequest) {
+            // rb.velocity = Vector3.up * jumpVelocity;
+			rb.AddForce(Vector3.up * jumpVelocity, ForceMode.Impulse);
+            jumpRequest = false;
+		}
+	}
+
+    void OnTriggerEnter(Collider other)
+    {
+		if (other.tag == "block") {
+			if (rb.velocity.y == 0) return;
+			//remove vertical velocity
+			rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+		}
+    }
 }

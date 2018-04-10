@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Manager : MonoBehaviour
 {
-    private bool isRight;
     public Player player;
     public GameObject block;
     public Transform blockContainer;
@@ -33,10 +32,12 @@ public class Manager : MonoBehaviour
 
     void Start()
     {
-        player.setVelocity(isRight);
+        player.setVelocity();
     }
 
     public void gameStart() {
+        //pause somehow 
+        
         scoreText.SetActive(true);
         pauseMenu.SetActive(false);
 
@@ -45,21 +46,30 @@ public class Manager : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
 
-        isRight = Random.value > 0.5f;
+
+        //create 3x3 platform
 
         createBlock(lastBlockPos);
-        spawn();
-        spawn();
-        spawn();
+        createBlock(new Vector3(lastBlockPos.x - blockSide, lastBlockPos.y, lastBlockPos.z));
+        createBlock(new Vector3(lastBlockPos.x, lastBlockPos.y, lastBlockPos.z - blockSide));
+        createBlock(new Vector3(lastBlockPos.x + blockSide, lastBlockPos.y, lastBlockPos.z + blockSide));
+        createBlock(new Vector3(lastBlockPos.x - blockSide, lastBlockPos.y, lastBlockPos.z - blockSide));
+        createBlock(new Vector3(lastBlockPos.x + blockSide, lastBlockPos.y, lastBlockPos.z - blockSide));
+        createBlock(new Vector3(lastBlockPos.x - blockSide, lastBlockPos.y, lastBlockPos.z + blockSide));
+        createBlock(new Vector3(lastBlockPos.x, lastBlockPos.y, lastBlockPos.z + blockSide));
+     
+
+        const int START_BLOCKS = 8;
+
+        for (int i = 0; i < START_BLOCKS; i++) {
+            spawn();
+        }
     }
 
     public void spawn() {
         Vector3 nextPos;
-        if (isRight) {
-            nextPos = new Vector3(lastBlockPos.x + blockSide, lastBlockPos.y, lastBlockPos.z);
-        } else {
-            nextPos = new Vector3(lastBlockPos.x, lastBlockPos.y, lastBlockPos.z + blockSide);
-        }
+        nextPos = new Vector3(lastBlockPos.x + blockSide, lastBlockPos.y, lastBlockPos.z);
+  
 
         createBlock(nextPos);
 
