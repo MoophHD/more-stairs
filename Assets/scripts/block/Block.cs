@@ -9,14 +9,13 @@ public class Block : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (spawned) return;
 		
-		if (other.tag == "player") {
+		if (other.tag == "blockTrigger") {
 			spawned = true;
+            Camera.main.GetComponent<Manager>().spawn();
+            Camera.main.GetComponent<Score>().add();
+
+            Invoke("suicide", lifeTime);
 		}
-
-        Camera.main.GetComponent<Manager>().spawn();
-		Camera.main.GetComponent<Score>().add();
-
-		Invoke("suicide", lifeTime);
 	}
 
 	void suicide() {

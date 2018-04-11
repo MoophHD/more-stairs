@@ -9,17 +9,44 @@ public class CustomGravity : MonoBehaviour
 
     public static float globalGravity = -9.81f;
 
-    Rigidbody m_rb;
+    Rigidbody rb;
+
+    private bool isOnGround = true;
 
     void OnEnable()
     {
-        m_rb = GetComponent<Rigidbody>();
-        m_rb.useGravity = false;
+        rb = GetComponent<Rigidbody>();
+        rb.useGravity = false;
     }
 
     void FixedUpdate()
     {
-        Vector3 gravity = globalGravity * gravityScale * Vector3.up;
-        m_rb.AddForce(gravity, ForceMode.Acceleration);
+        if (!isOnGround) {
+            Vector3 gravity = globalGravity * gravityScale * Vector3.up;
+            rb.AddForce(gravity, ForceMode.Acceleration);
+        } else {
+            resetVelocityY();
+        }
+
+        isOnGround = false;
+    }
+
+    void resetVelocityY() {
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+    }
+
+    void OnCollisionEnter(Collision other) {
+        if (other.transform.tag == "block")
+            resetVelocityY();
+    }
+
+    void OnTriggerEnter(Collider other) {
+        if (other.tag == "block")
+            isOnGround = true;
+
+    }
+    void OnTriggerStay(Collider other) {
+        if (other.tag == "block")
+            isOnGround = true;
     }
 }

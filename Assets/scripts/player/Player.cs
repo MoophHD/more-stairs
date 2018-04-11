@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour {
-	const float speed = 3;
+	const float speed = 10;
 	const float jumpVelocity = 5;
 	private Rigidbody rb;
 
@@ -20,6 +20,7 @@ public class Player : MonoBehaviour {
 	}
 
 	void Update() {
+		// print(rb.velocity);
         if (Input.GetMouseButtonDown(0))
         {
             jumpRequest = true;
@@ -28,18 +29,17 @@ public class Player : MonoBehaviour {
 
 	void FixedUpdate() {
         if (jumpRequest) {
-            // rb.velocity = Vector3.up * jumpVelocity;
 			rb.AddForce(Vector3.up * jumpVelocity, ForceMode.Impulse);
             jumpRequest = false;
 		}
 	}
 
-    void OnTriggerEnter(Collider other)
-    {
-		if (other.tag == "block") {
-			if (rb.velocity.y == 0) return;
-			//remove vertical velocity
-			rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-		}
-    }
+    // void OnTriggerEnter(Collider other)
+    // {
+	// 	if (other.tag == "block") {
+	// 		if (rb.velocity.y == 0) return;
+	// 		//remove vertical velocity
+	// 		rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+	// 	}
+    // }
 }
