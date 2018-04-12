@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Block : MonoBehaviour {
+	public bool isSpawnTrigger = true;
 	public bool spawned = false;
 	const int lifeTime = 25;
 
 	void OnTriggerEnter(Collider other) {
-		if (spawned) return;
-		
+        if (spawned || !isSpawnTrigger) return;
 		if (other.tag == "blockTrigger") {
 			spawned = true;
             Camera.main.GetComponent<Manager>().spawn();
@@ -17,7 +17,6 @@ public class Block : MonoBehaviour {
             Invoke("suicide", lifeTime);
 		}
 	}
-
 	void suicide() {
 		Destroy(gameObject);
 	}

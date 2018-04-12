@@ -11,15 +11,12 @@ public class PauseMenu : MonoBehaviour {
 
 	void Awake() {
 		scoreManager = Camera.main.GetComponent<Score>();
+        adManager = Camera.main.GetComponent<AdManager>();
 	}
 	public void onRestart() {
         adManager.showInterstial();
 
         Camera.main.GetComponent<Manager>().gameStart();
-	}
-
-	public void onSecondChance() {
-
 	}
 
     void OnEnable() {

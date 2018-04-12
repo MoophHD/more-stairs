@@ -23,8 +23,8 @@ public class Manager : MonoBehaviour
         bounds = mesh.bounds;
         playerSide = bounds.size.x * player.GetComponent<Transform>().localScale.x;
 
-
-        Vector3 playerPos = player.GetComponent<Transform>().position;
+        
+        Vector3 playerPos = player.startPos;
         lastBlockPos = new Vector3(playerPos.x, playerPos.y - (blockSide + playerSide) * 0.5f, playerPos.z);
 
         gameStart();
@@ -36,7 +36,8 @@ public class Manager : MonoBehaviour
     }
 
     public void gameStart() {
-        //pause somehow 
+        player.reset();
+        Time.timeScale = 1;
         
         scoreText.SetActive(true);
         pauseMenu.SetActive(false);
@@ -48,7 +49,7 @@ public class Manager : MonoBehaviour
 
 
         //create 3x3 platform
-
+        lastBlockPos = player.startPos;
         createBlock(lastBlockPos);
         createBlock(new Vector3(lastBlockPos.x - blockSide, lastBlockPos.y, lastBlockPos.z));
         createBlock(new Vector3(lastBlockPos.x, lastBlockPos.y, lastBlockPos.z - blockSide));
@@ -59,19 +60,26 @@ public class Manager : MonoBehaviour
         createBlock(new Vector3(lastBlockPos.x, lastBlockPos.y, lastBlockPos.z + blockSide));
      
 
-        const int START_BLOCKS = 8;
+        const int START_BLOCKS = 10;
 
         for (int i = 0; i < START_BLOCKS; i++) {
             spawn();
         }
     }
 
+    public int id = 0;
     public void spawn() {
         Vector3 nextPos;
         nextPos = new Vector3(lastBlockPos.x + blockSide, lastBlockPos.y, lastBlockPos.z);
   
 
         createBlock(nextPos);
+
+        if (id%4 == 3) {
+            createBlock(new Vector3(nextPos.x, nextPos.y + blockSide, nextPos.z), false);
+        }
+
+        id++;
 
         lastBlockPos = nextPos;
     }
@@ -81,7 +89,16 @@ public class Manager : MonoBehaviour
         nextBlock.GetComponent<Transform>().SetParent(blockContainer);
     }
 
+    void createBlock(Vector3 pos, bool trigger)
+    {
+        GameObject nextBlock = Instantiate(block, pos, Quaternion.identity);
+        nextBlock.GetComponent<Transform>().SetParent(blockContainer);
+
+        nextBlock.GetComponent<Block>().isSpawnTrigger = trigger;
+    }
+
     public void onLose() {
+        Time.timeScale = 0;
         scoreText.SetActive(false);
         pauseMenu.SetActive(true);
     }
