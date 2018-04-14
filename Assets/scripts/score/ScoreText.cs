@@ -13,6 +13,6 @@ public class ScoreText : MonoBehaviour {
 
     void Update() {
         if (gameObject.activeSelf) 
-            scoreTextTarget.text = score.scoreStr;
+            scoreTextTarget.text = score.score.ToString();
     }
 }

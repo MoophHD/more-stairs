@@ -7,14 +7,20 @@ public class Manager : MonoBehaviour
     public Player player;
     public GameObject block;
     public Transform blockContainer;
-    private float playerSide;
-    private float blockSide;
+    public GameObject pauseMenu;
+    public GameObject idleMenu;
+    public GameObject scoreText;
+    private Score score;
+    private BlockColor blockColor;
     private Vector3 lastBlockPos;
 
-    public GameObject pauseMenu;
-    public GameObject scoreText;
+
+    private float playerSide;
+    private float blockSide;
 
     void Awake() {
+        blockColor = Camera.main.GetComponent<BlockColor>();
+        score = Camera.main.GetComponent<Score>();
         Mesh mesh = block.GetComponent<MeshFilter>().sharedMesh;
         Bounds bounds = mesh.bounds;
         blockSide = bounds.size.x;
@@ -22,24 +28,21 @@ public class Manager : MonoBehaviour
         mesh = player.GetComponent<MeshFilter>().mesh;
         bounds = mesh.bounds;
         playerSide = bounds.size.x * player.GetComponent<Transform>().localScale.x;
+    }
 
-        
-        Vector3 playerPos = player.startPos;
-        lastBlockPos = new Vector3(playerPos.x, playerPos.y - (blockSide + playerSide) * 0.5f, playerPos.z);
-
+    void Start() {
         gameStart();
     }
 
-    void Start()
-    {
-        player.setVelocity();
-    }
-
     public void gameStart() {
+        blockColor.reset(); 
+        score.score = 0;
+        id = 0;
+        Time.timeScale = 0;
+        scoreText.SetActive(false);
         player.reset();
-        Time.timeScale = 1;
         
-        scoreText.SetActive(true);
+        idleMenu.SetActive(true);
         pauseMenu.SetActive(false);
 
         foreach (Transform child in blockContainer)
@@ -47,9 +50,9 @@ public class Manager : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
 
-
         //create 3x3 platform
-        lastBlockPos = player.startPos;
+        lastBlockPos = new Vector3(player.startPos.x, player.startPos.y - playerSide * 1.5f, player.startPos.z);
+
         createBlock(lastBlockPos);
         createBlock(new Vector3(lastBlockPos.x - blockSide, lastBlockPos.y, lastBlockPos.z));
         createBlock(new Vector3(lastBlockPos.x, lastBlockPos.y, lastBlockPos.z - blockSide));
@@ -67,11 +70,23 @@ public class Manager : MonoBehaviour
         }
     }
 
+    public void gamePlay() {
+        Time.timeScale = 1;
+        player.start();
+        scoreText.SetActive(true);
+        idleMenu.SetActive(false);
+    }
+
+    public void onLose() {
+        Time.timeScale = 0;
+        scoreText.SetActive(false);
+        pauseMenu.SetActive(true);
+    }
+
     public int id = 0;
     public void spawn() {
         Vector3 nextPos;
         nextPos = new Vector3(lastBlockPos.x + blockSide, lastBlockPos.y, lastBlockPos.z);
-  
 
         createBlock(nextPos);
 
@@ -95,11 +110,5 @@ public class Manager : MonoBehaviour
         nextBlock.GetComponent<Transform>().SetParent(blockContainer);
 
         nextBlock.GetComponent<Block>().isSpawnTrigger = trigger;
-    }
-
-    public void onLose() {
-        Time.timeScale = 0;
-        scoreText.SetActive(false);
-        pauseMenu.SetActive(true);
     }
 }

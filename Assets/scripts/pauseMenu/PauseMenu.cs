@@ -20,7 +20,7 @@ public class PauseMenu : MonoBehaviour {
 	}
 
     void OnEnable() {
-        score.text = scoreManager.scoreStr;
-		hgScore.text = scoreManager.hgScoreStr;
+        score.text = scoreManager.score.ToString();
+		hgScore.text = scoreManager.hgScore.ToString();
     }
 }
