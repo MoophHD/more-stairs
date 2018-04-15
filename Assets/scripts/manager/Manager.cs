@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class Manager : MonoBehaviour
 {
     public Player player;
@@ -14,9 +13,10 @@ public class Manager : MonoBehaviour
     private BlockColor blockColor;
     private Vector3 lastBlockPos;
 
-
     private float playerSide;
     private float blockSide;
+
+    const int START_BLOCKS = 10;
 
     void Awake() {
         blockColor = Camera.main.GetComponent<BlockColor>();
@@ -63,7 +63,7 @@ public class Manager : MonoBehaviour
         createBlock(new Vector3(lastBlockPos.x, lastBlockPos.y, lastBlockPos.z + blockSide));
      
 
-        const int START_BLOCKS = 10;
+        
 
         for (int i = 0; i < START_BLOCKS; i++) {
             spawn();
@@ -84,19 +84,43 @@ public class Manager : MonoBehaviour
     }
 
     public int id = 0;
+    private int lastStepId = 0;
+    private int maximum = 6;
+    
     public void spawn() {
         Vector3 nextPos;
         nextPos = new Vector3(lastBlockPos.x + blockSide, lastBlockPos.y, lastBlockPos.z);
 
-        createBlock(nextPos);
+        int order = id - lastStepId;
+        float chance = 0;
+        if (id < START_BLOCKS) {
+            chance = 0f;
+        } else if (order == 1) {
+            chance = 0.12f;
+        } else if (order == 2) {
+            chance = 0.15f;
+        } else {
+            // 1 = coef (max - 2)^2 + min_chance
+            // coef = (1 - min_chance) / (max - 2)^2
+            chance = 0.05625f * Mathf.Pow((order - 2), 2) + 0.1f;
+        }
+        
+        //success, step up
+        if (chance > Random.value) {
+            lastStepId = id;
+            //block under new layer, not triggirable
+            createBlock(nextPos, false);
 
-        if (id%4 == 3) {
-            createBlock(new Vector3(nextPos.x, nextPos.y + blockSide, nextPos.z), false);
+            Vector3 upPos = new Vector3(lastBlockPos.x + blockSide, lastBlockPos.y + blockSide, lastBlockPos.z);
+            createBlock(upPos);
+
+            lastBlockPos = upPos;
+        } else {
+            createBlock(nextPos);
+            lastBlockPos = nextPos;
         }
 
         id++;
-
-        lastBlockPos = nextPos;
     }
 
     void createBlock(Vector3 pos) {

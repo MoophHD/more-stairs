@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BlockColor : MonoBehaviour {
     public Material mat;
-    const float TIME_BEFORE_CHANGE = 5f;
+    const float TIME_BEFORE_CHANGE = 60f;
     private float changeTimer = 0f;
     const float LERP_TIME = 1f;
     private float t = 1;
