@@ -8,11 +8,14 @@ public class Block : MonoBehaviour {
 	const int lifeTime = 25;
 
 	void OnTriggerEnter(Collider other) {
-        if (spawned || !isSpawnTrigger) return;
+        if (spawned) return;
+
 		if (other.tag == "blockTrigger") {
 			spawned = true;
-            Camera.main.GetComponent<Manager>().spawn();
-            Camera.main.GetComponent<Score>().add();
+			if (isSpawnTrigger) {
+                Camera.main.GetComponent<Manager>().spawn();
+                Camera.main.GetComponent<Score>().add();
+			}
 
             Invoke("suicide", lifeTime);
 		}

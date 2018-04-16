@@ -4,13 +4,24 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public Transform toFollow;
+    public GameObject toFollow;
+    private Player player;
     private Vector3 offset;
 
     void Start() {
-        offset = transform.position - toFollow.position;
+        offset = transform.position - toFollow.transform.position;
+        player = toFollow.GetComponent<Player>();
     }
+
+    private float lastY;
     void Update() {
-        transform.position = toFollow.position + offset;
+        //~stable velocity
+        bool followY = !player.isJumping;
+        Vector3 toFollowPos = toFollow.transform.position;
+
+        transform.position = new Vector3(
+            toFollowPos.x,
+            followY ? toFollowPos.y : transform.position.y - offset.y,
+            toFollowPos.z) + offset;
     }
 }

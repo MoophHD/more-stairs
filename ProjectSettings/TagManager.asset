@@ -7,6 +7,7 @@ TagManager:
   - player
   - block
   - blockTrigger
+  - playerTrigger
   layers:
   - Default
   - TransparentFX

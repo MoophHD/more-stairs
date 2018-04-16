@@ -85,7 +85,7 @@ public class Manager : MonoBehaviour
 
     public int id = 0;
     private int lastStepId = 0;
-    private int maximum = 6;
+    // private int maximum = 6;
     
     public void spawn() {
         Vector3 nextPos;
