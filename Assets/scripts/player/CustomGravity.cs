@@ -7,7 +7,7 @@ public class CustomGravity : MonoBehaviour
 {
     public float gravityScale = 0;
 
-    public static float globalGravity = -9.81f;
+    public static float globalGravity = -10f;
 
     Rigidbody rb;
 

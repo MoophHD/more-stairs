@@ -85,9 +85,10 @@ public class Manager : MonoBehaviour
 
     public int id = 0;
     private int lastStepId = 0;
-    // private int maximum = 6;
+    // private int maximum = 5;
     
     public void spawn() {
+        print("spawn, id " + id);
         Vector3 nextPos;
         nextPos = new Vector3(lastBlockPos.x + blockSide, lastBlockPos.y, lastBlockPos.z);
 
@@ -96,13 +97,13 @@ public class Manager : MonoBehaviour
         if (id < START_BLOCKS) {
             chance = 0f;
         } else if (order == 1) {
-            chance = 0.12f;
+            chance = 0.1f;
         } else if (order == 2) {
-            chance = 0.15f;
+            chance = 0.18f;
         } else {
             // 1 = coef (max - 2)^2 + min_chance
             // coef = (1 - min_chance) / (max - 2)^2
-            chance = 0.05625f * Mathf.Pow((order - 2), 2) + 0.1f;
+            chance = 0.09444f * Mathf.Pow((order - 2), 2) + 0.1f;
         }
         
         //success, step up
@@ -124,12 +125,15 @@ public class Manager : MonoBehaviour
     }
 
     void createBlock(Vector3 pos) {
+        print("create block");
         GameObject nextBlock = Instantiate(block, pos, Quaternion.identity);
         nextBlock.GetComponent<Transform>().SetParent(blockContainer);
     }
 
     void createBlock(Vector3 pos, bool trigger)
     {
+        print("create block");
+
         GameObject nextBlock = Instantiate(block, pos, Quaternion.identity);
         nextBlock.GetComponent<Transform>().SetParent(blockContainer);
 
