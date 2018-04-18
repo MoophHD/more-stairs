@@ -13,6 +13,10 @@ public class CameraController : MonoBehaviour
         player = toFollow.GetComponent<Player>();
     }
 
+    public void reset() {
+        transform.position = player.startPos + offset;
+    }
+
     private float lastY;
     void FixedUpdate() {
         Vector3 toFollowPos = toFollow.transform.position;
@@ -23,12 +27,12 @@ public class CameraController : MonoBehaviour
             toFollowPos.z) + offset;
     }
     private Vector3 velocity = Vector3.zero;
-    public bool stabilising = false;
+    public bool stabilisingY = false;
     void Update() {
-        if (stabilising) {
+        if (stabilisingY) {
             Vector3 toFollowPos = toFollow.transform.position;
             if ( Mathf.Round(transform.position.y) == Mathf.Round(toFollowPos.y)) {
-                stabilising = false;
+                stabilisingY = false;
                 return;
             }
 
