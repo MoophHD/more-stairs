@@ -23,7 +23,7 @@ public class Score : MonoBehaviour
     }
 
     private void addScore(int value) {
-        score += SCORE_PER_ADD;
+        score += value;
         if (score > hgScore)
         {
             hgScore = score;

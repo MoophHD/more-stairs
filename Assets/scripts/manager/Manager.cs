@@ -8,13 +8,12 @@ public class Manager : MonoBehaviour
     public Transform blockContainer;
     public GameObject pauseMenu;
     public GameObject idleMenu;
-    public GameObject scoreText;
+    public ScoreText scoreText;
     private CameraController myCamera;
     private Score score;
     private BlockColor blockColor;
     private Vector3 lastBlockPos;
     public GameObject pointUp;
-    public Transform pointUpContainer;
 
     private float playerSide;
     private float blockSide;
@@ -24,6 +23,7 @@ public class Manager : MonoBehaviour
     const int START_BLOCKS = 10;
 
     void Awake() {
+        PopUpController.init();
         myCamera = Camera.main.GetComponent<CameraController>();
         blockColor = Camera.main.GetComponent<BlockColor>();
         score = Camera.main.GetComponent<Score>();
@@ -48,11 +48,13 @@ public class Manager : MonoBehaviour
     }
 
     public void gameStart() {
+        //idle mode
         blockColor.reset(); 
         score.score = 0;
         id = 0;
         Time.timeScale = 0;
-        scoreText.SetActive(false);
+        scoreText.gameObject.SetActive(true);
+
         player.reset();
         myCamera.reset();
         
@@ -82,21 +84,33 @@ public class Manager : MonoBehaviour
     }
 
     public void gamePlay() {
+        //real game start
+        scoreText.isUpdating = true;
+        scoreText.setHgScoreMode(false);
+
         Time.timeScale = 1;
         player.start();
-        scoreText.SetActive(true);
         idleMenu.SetActive(false);
     }
 
     public void onLose() {
+        scoreText.gameObject.SetActive(false);
+        scoreText.isUpdating = false;
+        scoreText.setHgScoreMode(true);
+
         Time.timeScale = 0;
-        scoreText.SetActive(false);
         pauseMenu.SetActive(true);
     }
 
     public int id = 0;
     private int lastStepId = 0;
-    private int maxNoStepBlocks = 4;
+    private int maxNoStepBlocks = 5;
+    private float pointUpRateMiddle = 1f;
+    private float pointUpRateStepUp = 0.45f;
+    private int lastRowLength;
+    private Vector3 lastMiddleVector;
+    private Vector3 lastStepUpVector;
+    
     
     public void spawn() {
         Vector3 nextPos;
@@ -104,8 +118,8 @@ public class Manager : MonoBehaviour
 
         // // 0.05 + 0.01 per 25
         float oneBlockChance = Mathf.Min(0.05f + (id / 25) / 100, 0.13f);
-
-        float twoBlockChance = Mathf.Min(0.15f + (id / 25) / 100, 0.25f);
+        float twoBlockChance = 1f;
+        // float twoBlockChance = Mathf.Min(0.15f + (id / 25) / 100, 0.25f);
 
         int order = id - lastStepId;
         float chance = 0;
@@ -125,29 +139,52 @@ public class Manager : MonoBehaviour
         {
             // 1 = coef (max - 2)^2 + min_chance
             // coef = (1 - min_chance) / (max - 2)^2
-            chance = 0.09444f * Mathf.Pow((order - 2), 2) + 0.1f;
+            chance = 0.09444f * Mathf.Pow((order - 2), 2) + oneBlockChance + twoBlockChance;
         }
         
  
 
         //success, step up
         if (chance > Random.value) {
-            lastStepId = id;
+
+            
             //block under new layer, not triggirable
             createBlock(nextPos, false);
 
-            Vector3 upPos = new Vector3(lastBlockPos.x + blockSide, lastBlockPos.y + blockSide, lastBlockPos.z);
+            Vector3 upPos = new Vector3(nextPos.x, lastBlockPos.y + blockSide, nextPos.z);
             createBlock(upPos);
 
             lastBlockPos = upPos;
+
+            float randi = Random.value;
+
+         
+            int rowLength = id - lastStepId;
+            //don't spawn a candy on 1st blocks
+            if (lastStepId == 0) { lastStepId = id; return;};
+
+            lastStepId = id;
+
+            if (order > 1) {
+                if (pointUpRateMiddle > randi) {                    Vector3 nextPointUp = new Vector3(
+                        // 0.35f + 0.2f * Random.value,
+                        nextPos.x - (rowLength) * ( 0.425f + 0.15f *Random.value ) - blockSide,
+                        nextPos.y,
+                        nextPos.z
+                    );
+                    createPointUp(nextPointUp);
+                }
+            } else {
+                if (pointUpRateStepUp > randi)
+                {
+                    lastStepUpVector = new Vector3(nextPos.x - blockSide, nextPos.y, nextPos.z);
+                    createPointUp(lastStepUpVector);
+                }
+            }
+
         } else {
             createBlock(nextPos);
             lastBlockPos = nextPos;
-        }
-
-        if (id % 2 == 0)
-        {
-            createPointUp(new Vector3(nextPos.x, nextPos.y + playerJumpHeight + (blockSide + pointUpSide) * .5f, nextPos.z));
         }
 
         id++;
@@ -166,7 +203,8 @@ public class Manager : MonoBehaviour
         nextBlock.GetComponent<Block>().isSpawnTrigger = trigger;
     }
 
-    void createPointUp(Vector3 pos) {
+    void createPointUp(Vector3 blockPos) {
+        Vector3 pos = new Vector3(blockPos.x, blockPos.y + playerJumpHeight + (blockSide + pointUpSide) * .5f, blockPos.z);
         GameObject nextPointUp = Instantiate(pointUp, pos, pointUp.GetComponent<Transform>().rotation);
         nextPointUp.GetComponent<Transform>().SetParent(blockContainer);
     }

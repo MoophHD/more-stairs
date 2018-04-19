@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 65381957077126574}
   - component: {fileID: 23728380456184236}
   - component: {fileID: 114595803011459994}
+  - component: {fileID: 135421422779108398}
   m_Layer: 0
   m_Name: PointsUp
   m_TagString: Untagged
@@ -37,8 +38,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1055739828660920}
   m_LocalRotation: {x: 0.5, y: -0, z: -0.5, w: 0.7071068}
-  m_LocalPosition: {x: 7.7470927, y: 2.1968374, z: 0.4719019}
-  m_LocalScale: {x: 0.65, y: 0.65, z: 0.65}
+  m_LocalPosition: {x: -1, y: 3.0210526, z: 0}
+  m_LocalScale: {x: 0.4, y: 0.4000001, z: 0.4}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -50,7 +51,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1055739828660920}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
@@ -90,10 +91,10 @@ BoxCollider:
   m_GameObject: {fileID: 1055739828660920}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.2287015, y: 1, z: 1.2066239}
+  m_Center: {x: 0.11435069, y: 0, z: 0.103312}
 --- !u!114 &114595803011459994
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -105,3 +106,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8c438e26b9fb304993ff662f882104b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!135 &135421422779108398
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1055739828660920}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.85
+  m_Center: {x: 0.3, y: 0.25, z: 0}
