@@ -6,7 +6,7 @@ PlayerSettings:
   serializedVersion: 12
   productGUID: 4f799f365380f90498934b59b51982cc
   AndroidProfiler: 0
-  defaultScreenOrientation: 4
+  defaultScreenOrientation: 0
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
@@ -140,7 +140,8 @@ PlayerSettings:
   useHDRDisplay: 0
   targetPixelDensity: 0
   resolutionScalingMode: 0
-  applicationIdentifier: {}
+  applicationIdentifier:
+    Android: com.mooph.toTheRight
   buildNumber: {}
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 16
@@ -216,7 +217,7 @@ PlayerSettings:
   AndroidTargetDevice: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: 
+  AndroidKeystoreName: D:/Users/Public/Documents/Unity Projects/more stairs/user.keystore
   AndroidKeyaliasName: 
   AndroidTVCompatibility: 1
   AndroidIsGame: 1

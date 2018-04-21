@@ -10,7 +10,7 @@ public class PopUpController : MonoBehaviour
 
     public static void init() {
         popUp = Resources.Load<PopUp>("PopUpParent");
-        canvas = GameObject.Find("canvas");
+        canvas = GameObject.Find("popUpTextCanvas");
         print(popUp);
     }
 

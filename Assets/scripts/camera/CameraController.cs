@@ -18,8 +18,9 @@ public class CameraController : MonoBehaviour
     }
 
     private float lastY;
+    Vector3 toFollowPos;
     void FixedUpdate() {
-        Vector3 toFollowPos = toFollow.transform.position;
+        toFollowPos = toFollow.transform.position;
 
         transform.position = new Vector3(
             toFollowPos.x,

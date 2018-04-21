@@ -71,7 +71,8 @@ public class Player : MonoBehaviour {
         }
 
         myCamera.stabilisingY = !isJumping;
-        if (lastFrameJump && rb.velocity.y <= 2) jump();
+
+        // if (lastFrameJump && rb.velocity.y <= 2) jump();
         lastFrameJump = false;
 
         if (jumpRequest
@@ -85,7 +86,7 @@ public class Player : MonoBehaviour {
             jumpRequest = false;
         }
 
-        if (rb.velocity.x != speed) rb.velocity = new Vector3(speed, rb.velocity.y, rb.velocity.z);
+        if (rb.velocity.x != speed) rb.velocity = new Vector3(speed, rb.velocity.y, 0f);
 
         if (rb.velocity.y < 0)
         {
