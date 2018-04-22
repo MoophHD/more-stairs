@@ -32,12 +32,15 @@ public class AdManager : MonoBehaviour {
 	}
 
 	public void showInterstial() {
+		Debug.Log("try show ad");
         if (interstitial.IsLoaded())
         {
+            Debug.Log("ad is loaded, showing");
             interstitial.Show();
+            interstitial.Destroy();
         }
-        interstitial.Destroy();
 
+		Debug.Log("requesting & loading new ad");
         request = new AdRequest.Builder().Build();
         interstitial.LoadAd(request);
 	}

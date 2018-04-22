@@ -11,7 +11,6 @@ public class PopUpController : MonoBehaviour
     public static void init() {
         popUp = Resources.Load<PopUp>("PopUpParent");
         canvas = GameObject.Find("popUpTextCanvas");
-        print(popUp);
     }
 
     public static PopUp createPopUp(Vector3 pos) {

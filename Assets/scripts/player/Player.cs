@@ -16,7 +16,6 @@ public class Player : MonoBehaviour {
 	private bool collidingWithBlock = false;
     private CameraController myCamera;
 	private CustomGravity gravity;
-    private bool lastFrameJump = false;
     public float fallScale = 13.5f;
     public float jumpScale = 14.25f;
     public bool isJumping = false;
@@ -72,16 +71,12 @@ public class Player : MonoBehaviour {
 
         myCamera.stabilisingY = !isJumping;
 
-        // if (lastFrameJump && rb.velocity.y <= 2) jump();
-        lastFrameJump = false;
-
         if (jumpRequest
             && (!isJumping)
             && gravity.gravityScale != 0)
         {
             jump();
             isJumping = true;
-            lastFrameJump = true;
 
             jumpRequest = false;
         }

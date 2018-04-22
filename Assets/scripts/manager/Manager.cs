@@ -18,6 +18,7 @@ public class Manager : MonoBehaviour
 
     private float playerSide;
     private float blockSide;
+    private float blockSideY;
     private float pointUpSide;
     private float playerJumpHeight;
 
@@ -34,8 +35,8 @@ public class Manager : MonoBehaviour
         Mesh mesh = block.GetComponent<MeshFilter>().sharedMesh;
         Bounds bounds = mesh.bounds;
         blockSide = bounds.size.x;
+        blockSideY = bounds.size.y * block.transform.localScale.y;
         
-
         mesh = player.GetComponent<MeshFilter>().mesh;
         bounds = mesh.bounds;
         playerSide = bounds.size.x * player.GetComponent<Transform>().localScale.x;
@@ -47,7 +48,6 @@ public class Manager : MonoBehaviour
         mesh = blockCover.GetComponent<MeshFilter>().sharedMesh;
         bounds = mesh.bounds;
         coverLength = bounds.size.x;
-        print("cover " + coverLength);
         playerJumpHeight = player.jumpHeight;
     }
 
@@ -61,7 +61,6 @@ public class Manager : MonoBehaviour
         score.score = 0;
         id = 0;
         lastStepId = 0;
-        Time.timeScale = 0;
         blockOrderIdle = "";
         scoreText.gameObject.SetActive(true);
         
@@ -85,9 +84,10 @@ public class Manager : MonoBehaviour
         
 
         //create 3x3 platform
-        lastBlockPos = new Vector3(player.startPos.x, player.startPos.y - playerSide * 1.5f, player.startPos.z);
+        lastBlockPos = new Vector3(player.startPos.x, player.startPos.y - playerSide * 1.5f - 0.08f, player.startPos.z);
 
         createBlock(lastBlockPos);
+        //spawn around
         createBlock(new Vector3(lastBlockPos.x - blockSide, lastBlockPos.y, lastBlockPos.z));
         createBlock(new Vector3(lastBlockPos.x, lastBlockPos.y, lastBlockPos.z - blockSide));
         createBlock(new Vector3(lastBlockPos.x + blockSide, lastBlockPos.y, lastBlockPos.z + blockSide));
@@ -95,6 +95,8 @@ public class Manager : MonoBehaviour
         createBlock(new Vector3(lastBlockPos.x + blockSide, lastBlockPos.y, lastBlockPos.z - blockSide));
         createBlock(new Vector3(lastBlockPos.x - blockSide, lastBlockPos.y, lastBlockPos.z + blockSide));
         createBlock(new Vector3(lastBlockPos.x, lastBlockPos.y, lastBlockPos.z + blockSide));
+
+        // lastBlockPos = new Vector3(lastBlockPos.x - blockSide, lastBlockPos.y,lastBlockPos.z);
 
         for (int i = 0; i < START_BLOCKS; i++) {
             spawn();
@@ -163,33 +165,44 @@ public class Manager : MonoBehaviour
             float coef = (1 - (oneBlockChance + twoBlockChance)) / Mathf.Pow((maxOrder - 2), 2);
             chance = coef * Mathf.Pow((order - 2), 2) + oneBlockChance + twoBlockChance;
         }
-
         if (blockOrderIdle.Length > 1) {
-            // print("idle " + blockOrderIdle);
             if (blockOrderIdle[0] == blockOrderIdle[1]) {
-                int idleOrder = (int)blockOrderIdle[0];
-                float moreChance = Random.value;
-                if (idleOrder == 1 || moreChance > 0.5) {
-                    if (order == idleOrder) chance = chance * .25f;
-                } else if (idleOrder == maxOrder) {
-                    if (order != idleOrder) chance = 4 * chance;
-                }
-            }
+                string idleNum = blockOrderIdle[0].ToString();
+                int idleOrder = int.Parse(idleNum);
+                if (idleOrder == order) {
 
-            blockOrderIdle = "";
+                        chance = chance * .25f;
+                        // blockOrderIdle = blockOrderIdle[1].ToString();
+                } else if (order != idleOrder) {
+                    // print("idle order " + idleNum);
+                    // print("order " + order);
+                    // print("affected chance from " + chance + " to " + (Mathf.Abs(idleOrder - order) * 0.85f + 1) * chance);
+
+                    chance = (Mathf.Abs(idleOrder - order) * 0.85f + 1) * chance;
+                    // blockOrderIdle = blockOrderIdle[1].ToString();
+                }
+            } else {
+                blockOrderIdle = blockOrderIdle[1].ToString();
+            }
         }
             
 
-
         //success, step up
         if (chance > Random.value) {
-            // print("order " + order + " chance " + chance);
+            if (order != 0) {         
+                blockOrderIdle += order.ToString();
 
-            blockOrderIdle += order.ToString();
+                if (blockOrderIdle.Length > 2)
+                {
+                    blockOrderIdle = blockOrderIdle[1].ToString() + order.ToString();
+                }
+
+            }
+
             //block under new layer, not triggirable
             createBlock(nextPos, false);
 
-            Vector3 upPos = new Vector3(nextPos.x, lastBlockPos.y + blockSide, nextPos.z);
+            Vector3 upPos = new Vector3(nextPos.x, lastBlockPos.y + blockSideY, nextPos.z);
             createBlock(upPos);
 
             lastBlockPos = upPos;
@@ -202,7 +215,7 @@ public class Manager : MonoBehaviour
             if (rowLength == 0) rowLength = 1;
             Vector3 nextCoverPos = new Vector3(
                 nextPos.x - rowLength * blockSide * 0.5f - blockSide *.5f,
-                nextPos.y + blockSide * .5f + 0.01f,
+                nextPos.y + blockSideY * .5f + 0.01f,
                 nextPos.z
             );
             GameObject newCover = Instantiate(blockCover, nextCoverPos, Quaternion.identity);
