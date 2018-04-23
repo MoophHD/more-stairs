@@ -10,7 +10,6 @@ public class PointUp : MonoBehaviour {
 		if (collider.tag == "player") {
 			Camera.main.GetComponent<Score>().addPointUp();
 
-            popUpText = PopUpController.createPopUp(transform.position);
 
             material = GetComponent<Renderer>().material;
 
@@ -25,10 +24,10 @@ public class PointUp : MonoBehaviour {
             material.EnableKeyword("_ALPHABLEND_ON");
             material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
             material.renderQueue = 3000;
+            popUpText = PopUpController.createPopUp(transform.position);
 
-
-			// Destroy(gameObject, popUpText.animationLength);
-		} else if (collider.tag == "blockTrigger") {
+            // Destroy(gameObject, popUpText.animationLength);
+        } else if (collider.tag == "blockTrigger") {
             Destroy(gameObject, suicideAfter);
 		}
 	}

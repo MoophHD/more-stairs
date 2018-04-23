@@ -96,11 +96,22 @@ public class Manager : MonoBehaviour
         createBlock(new Vector3(lastBlockPos.x - blockSide, lastBlockPos.y, lastBlockPos.z + blockSide));
         createBlock(new Vector3(lastBlockPos.x, lastBlockPos.y, lastBlockPos.z + blockSide));
 
-        // lastBlockPos = new Vector3(lastBlockPos.x - blockSide, lastBlockPos.y,lastBlockPos.z);
+        lastBlockPos = new Vector3(lastBlockPos.x - blockSide, lastBlockPos.y,lastBlockPos.z);
 
         for (int i = 0; i < START_BLOCKS; i++) {
             spawn();
         }
+
+        Vector3 lastStartBlocksPos = new Vector3(lastBlockPos.x + blockSide * START_BLOCKS, lastBlockPos.y, lastBlockPos.z);
+        Vector3 startCoverPos = new Vector3(
+            lastStartBlocksPos.x - START_BLOCKS * blockSide * 0.5f - blockSide * .5f,
+            lastStartBlocksPos.y + blockSideY * .5f + 0.01f,
+            lastStartBlocksPos.z
+        );
+        GameObject newCover = Instantiate(blockCover, startCoverPos, Quaternion.identity);
+        newCover.transform.SetParent(blockContainer);
+        Vector3 coverScale = newCover.transform.localScale;
+        newCover.transform.localScale = new Vector3((blockSide * START_BLOCKS) / coverLength, coverScale.y, coverScale.z);
     }
 
     public void gamePlay() {
@@ -126,7 +137,6 @@ public class Manager : MonoBehaviour
     private int lastStepId = 0;
     private int maxOrder = 4;
     private float pointUpRateMiddle = 0.2f - perMissingMiddle;
-    private float candyTargetMedium = 0.375f;
     private int middleNoPoints = 0;
     private static float perMissingMiddle = 0.055f;
     private float pointUpRateStepUp = 0.45f;
@@ -225,34 +235,37 @@ public class Manager : MonoBehaviour
 
             //SPAWN_CANDY
             //don't spawn a candy on 1st blocks
-            if (lastStepId == 0) { lastStepId = id; return;};
+            //first blocks cover already spawned
+            if (lastStepId != 0 && id > START_BLOCKS) {
+                    if (order > 1)
+                    {
+                        middleNoPoints++;
+                        float candyChance = pointUpRateMiddle + middleNoPoints * perMissingMiddle;
 
-            lastStepId = id;
+                        if (candyChance > randi)
+                        {
+                            Vector3 nextPointUp = new Vector3(
+                                // 0.35f + 0.2f * Random.value,
+                                nextPos.x - (rowLength) * (0.425f + 0.15f * Random.value) - blockSide,
+                                nextPos.y,
+                                nextPos.z
+                            );
+                            createPointUp(nextPointUp);
+                            middleNoPoints = 0;
 
-            if (order > 1) {
-                middleNoPoints++;
-                float candyChance = pointUpRateMiddle + middleNoPoints * perMissingMiddle;
- 
-                if ( candyChance  > randi) {
-                    Vector3 nextPointUp = new Vector3(
-                        // 0.35f + 0.2f * Random.value,
-                        nextPos.x - (rowLength) * ( 0.425f + 0.15f *Random.value ) - blockSide,
-                        nextPos.y,
-                        nextPos.z
-                    );
-                    createPointUp(nextPointUp);
-                    middleNoPoints = 0;
-
+                        }
+                        middleNoPoints++;
                     }
-                middleNoPoints++;
-            } else {
-                if (pointUpRateStepUp  > randi)
-                {
-                    lastStepUpVector = new Vector3(nextPos.x - blockSide, nextPos.y, nextPos.z);
-                    createPointUp(lastStepUpVector);
+                    else
+                    {
+                        if (pointUpRateStepUp > randi)
+                        {
+                            lastStepUpVector = new Vector3(nextPos.x - blockSide, nextPos.y, nextPos.z);
+                            createPointUp(lastStepUpVector);
+                        }
+                    }
                 }
-            }
-
+            lastStepId = id;
         } else {
             createBlock(nextPos);
             lastBlockPos = nextPos;

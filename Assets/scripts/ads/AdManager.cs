@@ -6,9 +6,7 @@ using System;
 using UnityEngine.SceneManagement;
 
 public class AdManager : MonoBehaviour {
-	const string appId = "ca-app-pub-1038804138558980~9877584517";
-	const string bannerId = "ca-app-pub-1038804138558980/9228995055";
-	const string testBannerId = "ca-app-pub-3940256099942544/6300978111";
+	const string appId = "ca-app-pub-3940256099942544~3347511713";
 
 	const string interstialId = "ca-app-pub-1038804138558980/9283522292";
 	const string testInterstialId = "ca-app-pub-3940256099942544/1033173712";
@@ -22,26 +20,42 @@ public class AdManager : MonoBehaviour {
         }
     }
 	void Awake() {
-		_instance = this;
-	}
+        _instance = this;
+    }
 
-	void Start () {
-		MobileAds.Initialize(appId);
-        interstitial = new InterstitialAd(testInterstialId);
-        request = new AdRequest.Builder().Build();
-	}
+	void Start() {
+        Debug.Log("ad manager init");
+        MobileAds.Initialize(appId);
+
+        requestInterstitial();
+    }
+
+    private AdRequest createRequest() {
+        return new AdRequest.Builder().AddKeyword("game").Build();
+    }
+
+    private void requestInterstitial() {
+        if (this.interstitial != null)
+        {
+            this.interstitial.Destroy();
+        }
+
+        this.interstitial = new InterstitialAd(testInterstialId);
+        this.interstitial.LoadAd(this.createRequest());
+    }
 
 	public void showInterstial() {
+ 
+
 		Debug.Log("try show ad");
-        if (interstitial.IsLoaded())
+        Debug.Log("ad " + this.interstitial);
+        if (this.interstitial.IsLoaded())
         {
-            Debug.Log("ad is loaded, showing");
-            interstitial.Show();
-            interstitial.Destroy();
+            this.interstitial.Show();
+
+            this.requestInterstitial();
         }
 
 		Debug.Log("requesting & loading new ad");
-        request = new AdRequest.Builder().Build();
-        interstitial.LoadAd(request);
 	}
 }

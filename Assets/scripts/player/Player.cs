@@ -32,7 +32,7 @@ public class Player : MonoBehaviour {
 
     public void start()
     {
-		rb.constraints = RigidbodyConstraints.FreezeRotation;
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
         Vector3 dir = Vector3.right;
         rb.velocity = dir * speed;
         gravity.gravityScale = 1;
@@ -52,6 +52,7 @@ public class Player : MonoBehaviour {
         rb.velocity += Vector3.up * jumpVelocity;
     }
     void Update() {
+        if (gravity.gravityScale == 0) return;
         if (Input.GetMouseButtonDown(0)) {
             if (IsPointerOverUIObject()) return;
             jumpRequest = true;
