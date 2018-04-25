@@ -10,6 +10,11 @@ public class AdManager : MonoBehaviour {
 
 	const string interstialId = "ca-app-pub-1038804138558980/9283522292";
 	const string testInterstialId = "ca-app-pub-3940256099942544/1033173712";
+    const int secondsBetweenAds = 0 * 60;
+    int lastAdTime;
+    System.DateTime epochStart;
+
+
 	private InterstitialAd interstitial;
     private AdRequest request;
 
@@ -19,12 +24,18 @@ public class AdManager : MonoBehaviour {
             return _instance;
         }
     }
+    int getCurSeconds() {
+        return (int)(System.DateTime.UtcNow - epochStart).TotalSeconds;
+    }
 	void Awake() {
         _instance = this;
+        DontDestroyOnLoad(this);
     }
 
 	void Start() {
-        Debug.Log("ad manager init");
+        epochStart = new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc);
+        lastAdTime = getCurSeconds();
+
         MobileAds.Initialize(appId);
 
         requestInterstitial();
@@ -35,8 +46,10 @@ public class AdManager : MonoBehaviour {
     }
 
     private void requestInterstitial() {
+        Debug.Log("request ad");
         if (this.interstitial != null)
         {
+            Debug.Log("destroying an old ad");
             this.interstitial.Destroy();
         }
 
@@ -45,17 +58,21 @@ public class AdManager : MonoBehaviour {
     }
 
 	public void showInterstial() {
- 
+        int now = getCurSeconds();
+        if (now - lastAdTime >= secondsBetweenAds) {
+            lastAdTime = now;
+        } else {
+            return;
+        }
 
 		Debug.Log("try show ad");
         Debug.Log("ad " + this.interstitial);
+
         if (this.interstitial.IsLoaded())
         {
             this.interstitial.Show();
-
+            Debug.Log("just showed an ad");
             this.requestInterstitial();
         }
-
-		Debug.Log("requesting & loading new ad");
 	}
 }
