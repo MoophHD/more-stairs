@@ -6,11 +6,11 @@ using System;
 using UnityEngine.SceneManagement;
 
 public class AdManager : MonoBehaviour {
-	const string appId = "ca-app-pub-3940256099942544~3347511713";
+	const string appId = "ca-app-pub-1038804138558980~2489664957";
 
-	const string interstialId = "ca-app-pub-1038804138558980/9283522292";
+	const string interstialId = "ca-app-pub-1038804138558980/3769713765";
 	const string testInterstialId = "ca-app-pub-3940256099942544/1033173712";
-    const int secondsBetweenAds = 0 * 60;
+    const int secondsBetweenAds = 3 * 60;
     int lastAdTime;
     System.DateTime epochStart;
 
@@ -46,14 +46,12 @@ public class AdManager : MonoBehaviour {
     }
 
     private void requestInterstitial() {
-        Debug.Log("request ad");
         if (this.interstitial != null)
         {
-            Debug.Log("destroying an old ad");
             this.interstitial.Destroy();
         }
 
-        this.interstitial = new InterstitialAd(testInterstialId);
+        this.interstitial = new InterstitialAd(interstialId);
         this.interstitial.LoadAd(this.createRequest());
     }
 
@@ -64,9 +62,6 @@ public class AdManager : MonoBehaviour {
         } else {
             return;
         }
-
-		Debug.Log("try show ad");
-        Debug.Log("ad " + this.interstitial);
 
         if (this.interstitial.IsLoaded())
         {

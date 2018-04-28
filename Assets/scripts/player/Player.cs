@@ -52,8 +52,12 @@ public class Player : MonoBehaviour {
         rb.velocity += Vector3.up * jumpVelocity;
     }
     void Update() {
+        if (!UnityEngine.Rendering.SplashScreen.isFinished) return;
+
         if (gravity.gravityScale == 0) return;
         if (Input.GetMouseButtonDown(0)) {
+            //deny requests on 1st part of a jump
+            if (Mathf.Round(rb.velocity.y) > 0) return;
             if (IsPointerOverUIObject()) return;
             jumpRequest = true;
         }
@@ -61,7 +65,7 @@ public class Player : MonoBehaviour {
 
     void FixedUpdate()
     {
-		if (!collidingWithBlock || Mathf.Round(rb.velocity.y) != 0)
+        if (!collidingWithBlock || Mathf.Round(rb.velocity.y) != 0)
         {
             isJumping = true;
         }

@@ -12,7 +12,7 @@ public class PopUp : MonoBehaviour
         AnimatorClipInfo[] clipInfo = animator.GetCurrentAnimatorClipInfo(0);
         animationLength = clipInfo[0].clip.length;
 
-        Destroy(gameObject, animationLength - 0.05f);
+        Destroy(gameObject, animationLength - 0.04f);
 
         popUpText = animator.GetComponent<Text>();
         popUpText.text = "+ " + Score.SCORE_PER_POINT_UP.ToString();

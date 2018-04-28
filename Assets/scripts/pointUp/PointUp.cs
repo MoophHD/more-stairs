@@ -10,7 +10,6 @@ public class PointUp : MonoBehaviour {
 		if (collider.tag == "player") {
 			Camera.main.GetComponent<Score>().addPointUp();
 
-
             material = GetComponent<Renderer>().material;
 
             material.SetFloat("_Mode", 2f);

@@ -57,6 +57,7 @@ public class Manager : MonoBehaviour
 
     public void gameStart() {
         //idle mode
+        candies = 0;
         blockColor.reset(); 
         score.score = 0;
         id = 0;
@@ -144,14 +145,17 @@ public class Manager : MonoBehaviour
     private Vector3 lastMiddleVector;
     private Vector3 lastStepUpVector;
     private string blockOrderIdle = "";
-    
+    int candies = 0;
+    const float maxCandyPerBlock = 0.3f;
+    const float minCandyPerBlock = 0.09f;
+
     public void spawn() {
         Vector3 nextPos;
         nextPos = new Vector3(lastBlockPos.x + blockSide, lastBlockPos.y, lastBlockPos.z);
 
-        // + chance per 35 points
-        int moreChancePer = 32;
-        float oneBlockChance = Mathf.Min(0.09f + (id / moreChancePer) / 100, 0.18f);
+        // + 0.01 chance per X points
+        int moreChancePer = 30;
+        float oneBlockChance = Mathf.Min(0.07f + (id / moreChancePer) / 100, 0.18f);
         float twoBlockChance = Mathf.Min(0.22f + (id / moreChancePer) / 100, 0.35f);
 
         int order = id - lastStepId;
@@ -217,7 +221,6 @@ public class Manager : MonoBehaviour
 
             lastBlockPos = upPos;
 
-            float randi = Random.value;
 
             int rowLength = id - lastStepId;
 
@@ -237,7 +240,23 @@ public class Manager : MonoBehaviour
             //don't spawn a candy on 1st blocks
             //first blocks cover already spawned
             if (lastStepId != 0 && id > START_BLOCKS) {
-                    if (order > 1)
+                float randi;
+                float candyPerBlock;
+                if (candies == 0) {
+                    candyPerBlock = (maxCandyPerBlock + minCandyPerBlock) * .5f;
+                } else {
+                    candyPerBlock = (float)candies / (float)(id - START_BLOCKS);
+                }
+
+                if (candyPerBlock > maxCandyPerBlock) {
+                    randi = 1f;
+                } else if (candyPerBlock < minCandyPerBlock) {
+                    randi = 0f;
+                } else {
+                    randi = Random.value;
+                }
+
+                if (order > 1)
                     {
                         middleNoPoints++;
                         float candyChance = pointUpRateMiddle + middleNoPoints * perMissingMiddle;
@@ -291,6 +310,7 @@ public class Manager : MonoBehaviour
     }
 
     void createPointUp(Vector3 blockPos) {
+        candies++;
         Vector3 pos = new Vector3(blockPos.x, blockPos.y + playerJumpHeight + (blockSide + pointUpSide) * .5f, blockPos.z);
         GameObject nextPointUp = Instantiate(pointUp, pos, pointUp.GetComponent<Transform>().rotation);
         nextPointUp.GetComponent<Transform>().SetParent(blockContainer);
