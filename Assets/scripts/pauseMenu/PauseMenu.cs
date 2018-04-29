@@ -14,8 +14,7 @@ public class PauseMenu : MonoBehaviour {
         adManager = Camera.main.GetComponent<AdManager>();
 	}
 	public void onRestart() {
-		Debug.Log("onRestart");
-        AdManager.instance.showInterstial();
+        if (AdManager.instance) AdManager.instance.showInterstial();
 
         Camera.main.GetComponent<Manager>().gameStart();
 	}

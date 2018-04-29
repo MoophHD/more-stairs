@@ -7,7 +7,10 @@ public class CameraController : MonoBehaviour
     public GameObject toFollow;
     private Player player;
     private Vector3 offset;
-
+    private bool isFrozen = false;
+    public void freeze(bool freeze) {
+        isFrozen = freeze;
+    }
     void Start() {
         offset = transform.position - toFollow.transform.position;
         player = toFollow.GetComponent<Player>();
@@ -27,9 +30,15 @@ public class CameraController : MonoBehaviour
             transform.position.y - offset.y,
             toFollowPos.z) + offset;
     }
+
+    public void flip() {
+        Camera.main.projectionMatrix = Camera.main.projectionMatrix * Matrix4x4.Scale(new Vector3(-1, 1, 1));
+    }
     private Vector3 velocity = Vector3.zero;
     public bool stabilisingY = false;
     void Update() {
+        if (isFrozen) return;
+
         if (stabilisingY) {
             Vector3 toFollowPos = toFollow.transform.position;
             if ( Mathf.Round(transform.position.y) == Mathf.Round(toFollowPos.y)) {

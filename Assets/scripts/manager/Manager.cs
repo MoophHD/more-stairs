@@ -120,7 +120,7 @@ public class Manager : MonoBehaviour
         scoreText.isUpdating = true;
         scoreText.setHgScoreMode(false);
 
-        Time.timeScale = 1;
+        // Time.timeScale = 1;
         player.start();
         idleMenu.SetActive(false);
     }
@@ -130,7 +130,7 @@ public class Manager : MonoBehaviour
         scoreText.isUpdating = false;
         scoreText.setHgScoreMode(true);
 
-        Time.timeScale = 0;
+        // Time.timeScale = 0;
         pauseMenu.SetActive(true);
     }
 

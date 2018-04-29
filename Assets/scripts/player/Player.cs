@@ -22,8 +22,10 @@ public class Player : MonoBehaviour {
 
     public float jumpHeight;
 
+
     public void reset(){
-		tr.position = startPos;
+        Camera.main.GetComponent<CameraController>().freeze(false);
+        tr.position = startPos;
 		rb.velocity = Vector3.zero;
         gravity.gravityScale = 0;
 
@@ -122,6 +124,8 @@ public class Player : MonoBehaviour {
         if (collider.tag == "playerTrigger") {
             collidingWithBlock = true;
         } else if (collider.tag == "loseTrigger") {
+            rb.constraints = RigidbodyConstraints.FreezePosition;
+            Camera.main.GetComponent<CameraController>().freeze(true);
             Camera.main.GetComponent<Manager>().onLose();
         }
     }
