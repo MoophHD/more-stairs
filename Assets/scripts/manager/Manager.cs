@@ -15,6 +15,7 @@ public class Manager : MonoBehaviour
     private Vector3 lastBlockPos;
     public GameObject pointUp;
     private GameObject popUpTextCanvas;
+    public GameObject newBlock;
 
     private float playerSide;
     private float blockSide;
@@ -49,6 +50,13 @@ public class Manager : MonoBehaviour
         bounds = mesh.bounds;
         coverLength = bounds.size.x;
         playerJumpHeight = player.jumpHeight;
+
+
+        mesh = newBlock.GetComponent<MeshFilter>().sharedMesh;
+        bounds = mesh.bounds;
+        float side = bounds.size.x;
+        float scale = blockSide / side;
+        print("scale " + scale);
     }
 
     void Start() {

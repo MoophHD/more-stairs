@@ -8,12 +8,17 @@ public class CameraController : MonoBehaviour
     private Player player;
     private Vector3 offset;
     private bool isFrozen = false;
-    public void freeze(bool freeze) {
-        isFrozen = freeze;
-    }
-    void Start() {
+    void Start()
+    {
         offset = transform.position - toFollow.transform.position;
         player = toFollow.GetComponent<Player>();
+    }
+    public void flip()
+    {
+        Camera.main.projectionMatrix = Camera.main.projectionMatrix * Matrix4x4.Scale(new Vector3(-1, 1, 1));
+    }
+    public void freeze(bool freeze) {
+        isFrozen = freeze;
     }
 
     public void reset() {
@@ -31,9 +36,7 @@ public class CameraController : MonoBehaviour
             toFollowPos.z) + offset;
     }
 
-    public void flip() {
-        Camera.main.projectionMatrix = Camera.main.projectionMatrix * Matrix4x4.Scale(new Vector3(-1, 1, 1));
-    }
+
     private Vector3 velocity = Vector3.zero;
     public bool stabilisingY = false;
     void Update() {

@@ -18,6 +18,8 @@ public class IdleMenuButtons : MonoBehaviour {
 	public Sprite moon;
 	public Sprite sun;
 
+	public Text[] textToAffect;
+
 	void Awake () {
 		isBgColorWhite = true;
         t = 1f;
@@ -38,11 +40,26 @@ public class IdleMenuButtons : MonoBehaviour {
             bgClFrom = white;
             bgClTo = black;
             toggleClBtnSprite.sprite = sun;
+
+            for (int i = 0; i < textToAffect.Length; i++)
+            {
+                Text text = textToAffect[i];
+
+                text.color = white;
+            }
 		} else {
             //to white
             bgClFrom = black;
             bgClTo = white;
             toggleClBtnSprite.sprite = moon;
+
+
+            for (int i = 0; i < textToAffect.Length; i++)
+            {
+                Text text = textToAffect[i];
+
+                text.color = black;
+            }
         }
 
         isBgColorWhite = !isBgColorWhite;
